@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Registrar empleado</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  {% for field in form %}
+  <div class="error">
+  {{ field.errors }}
+  </div>
+  {{ field }}
+  {% endfor %}
+<button type="submit" id=""></button>
+</form>
+<div class="botones">
+  <a href="{% url 'menu' %}">Volver</a>
+  <button type="submit">Guardar</button>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Marcación{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+  <main class="container">
+    <div class="cuadro">
+      <header>
+        <h1>Marcación de Entrada</h1>
+      </header>
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</body>
+
+</html>

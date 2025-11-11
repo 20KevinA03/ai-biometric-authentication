@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Resultado</h2>
+<div class="textoResultado">
+  {% if data %}
+  <p><strong>{{ data.nombre }}</strong> ({{ data.documento }})</p>
+  <p>{{ data.mensaje }}</p>
+  {% if data.cuando %}<p>Hora: {{ data.cuando }}</p>{% endif %}
+  {% else %}
+  <p>Sin datos.</p>
+  {% endif %}
+</div>
+<div class="botones">
+  <a href="{% url 'login' %}">Aceptar</a>
+</div>
+{% endblock %}

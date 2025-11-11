@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Menú principal</h2>
+<div class="botones">
+  <a href="{% url 'registrar' %}">Registrar empleado</a>
+  <a href="{% url 'login' %}">Marcar entrada</a>
+</div>
+{% endblock %}

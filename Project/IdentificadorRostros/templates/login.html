@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Marcar entrada</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  {% for field in form %}
+  {{ field }}
+  <div class="error">
+  {{ field.errors }}
+  </div>
+  {% endfor %}
+  <button type="submit" id=""></button>
+</form>
+<div class="botones">
+  <a href="{% url 'menu' %}">Volver</a>
+  <button type="submit">Marcar</button>
+</div>
+{% endblock %}
+
+
+<script>
+
+</script>
