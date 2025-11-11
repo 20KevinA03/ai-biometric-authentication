@@ -1,0 +1,70 @@
+# === Entorno de Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.py.class
+*.pyc
+
+# === Entorno virtual ===
+.venv/
+venv/
+env/
+ENV/
+
+# === Archivos de configuración local ===
+*.env
+*.env.*
+*.local
+*.sqlite3
+db.sqlite3
+
+# === Archivos de logs ===
+*.log
+logs/
+*.pot
+
+# === Archivos de compilación / empaquetado ===
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+
+# === Archivos de IDEs ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === Archivos del sistema ===
+.DS_Store
+Thumbs.db
+
+# === Archivos de static y media generados ===
+staticfiles/
+media/
+static/
+tmp/
+
+# === Archivos de cobertura y pruebas ===
+.coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/
+coverage.xml
+nosetests.xml
+test-results/
+
+# === Archivos de migraciones (opcional, si no quieres versionarlas) ===
+# */migrations/*.py
+# !*/migrations/__init__.py
