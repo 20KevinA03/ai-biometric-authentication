@@ -6,20 +6,15 @@
   {{ form.non_field_errors }}
 
   {% for field in form %}
-  {{ field }}
-  <div class="error">
-  {{ field.errors }}
-  </div>
+    {{ field }}
+    <div class="error">
+      {{ field.errors }}
+    </div>
   {% endfor %}
-  <button type="submit" id=""></button>
+
+  <div class="botones">
+    <a href="{% url 'menu' %}">Volver</a>
+    <button type="submit">Marcar</button>
+  </div>
 </form>
-<div class="botones">
-  <a href="{% url 'menu' %}">Volver</a>
-  <button type="submit">Marcar</button>
-</div>
 {% endblock %}
-
-
-<script>
-
-</script>

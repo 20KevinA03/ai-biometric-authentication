@@ -1,65 +1,88 @@
-<div class="wrap">
-  <h2>Por favor mira a la cámara y parpadea 3 veces</h2>
-  <img class="video" src="{% url 'video_feed' %}" alt="Video stream" />
-  <div id="status" class="msg">Esperando autenticación…</div>
-</div>
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Validación biométrica</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <div class="Content">
+      <div class="camara">
+        <h2>Por favor mira a la cámara y parpadea 3 veces</h2>
+        <img class="video" src="{% url 'video_feed' %}" alt="Video stream" />
+      </div>
+      <div class="cuadro">
+        <div class="botones">
+          <a href="{% url 'menu' %}">Cancelar</a>
+        </div>
+        <div id="status" class="msg">Inicializando…</div>
+      </div>
+    </div>
+  </div>
 
-<script>
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
       }
+      return cookieValue;
     }
-    return cookieValue;
-  }
-  const csrftoken = getCookie('csrftoken');
 
-  let ticking = false;
+    // Cuando se abandona la página, pedimos al backend que apague la cámara
+    window.addEventListener("pagehide", () => {
+      fetch("{% url 'stop_camera' %}", { keepalive: true });
+    });
 
-  async function checkStatus() {
-    if (ticking) return;
-    ticking = true;
-    try {
-      const r = await fetch("{% url 'camera_status' %}", { cache: "no-store" });
-      const j = await r.json();
-      const box = document.getElementById("status");
-      box.textContent = j.message || (j.ok ? "Autenticación completa." : "Esperando autenticación…");
-      if (j.ok) {
-        box.classList.add("ok");
-        // Finalizar registro en el servidor (crea Empleado y cierra cam)
-        const rr = await fetch("{% url 'finalizar_registro' %}", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": csrftoken,
-          "Content-Type": "application/json"
-        },
-        credentials: "same-origin",
-        body: JSON.stringify({}) // aunque no envíes datos, manda algo
-      });
-        const jj = await rr.json();
-        if (jj.ok) {
-          // Llevar a una página de éxito simple
-          alert(jj.message || "Usuario registrado correctamente");
-          window.location.href = "{% url 'menu' %}";
-          return;
-        } else {
-          alert(jj.message || "No se pudo finalizar el registro.");
+    let ticking = false;
+    async function checkStatus() {
+      if (ticking) return;
+      ticking = true;
+      try {
+        const r = await fetch("{% url 'camera_status' %}", { cache: "no-store" });
+        const j = await r.json();
+        const st = document.getElementById("status");
+
+        // Mensajes uno por uno, en líneas separadas
+        const lines = [];
+        lines.push(j.visualizando ? "Cámara: activa" : "Cámara: sin señal…");
+        if (j.glass) lines.push("Quita las gafas.");
+        if (j.cap)   lines.push("Quita la gorra/sombrero.");
+        if (j.blinks !== undefined) lines.push("Parpadeos: " + j.blinks);
+        if (j.message) lines.push(j.message);
+        st.innerHTML = lines.map(text => `<div>${text}</div>`).join("");
+
+        if (j.ok) {
+          const crf = getCookie('csrftoken');
+          const rr = await fetch("{% url 'finalizar_ingreso' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": crf }
+          });
+          const jj = await rr.json();
+          if (jj.ok) {
+            window.location = "{% url 'success' %}";
+            return;
+          } else {
+            alert(jj.message || "No se pudo finalizar el ingreso.");
+          }
         }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        ticking = false;
+        setTimeout(checkStatus, 500);
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      ticking = false;
-      setTimeout(checkStatus, 500);
     }
-  }
-
-  setTimeout(checkStatus, 600); // pequeño delay para que inicie el stream
-</script>
+    setTimeout(checkStatus, 600);
+  </script>
+</body>
+</html>

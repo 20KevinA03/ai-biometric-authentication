@@ -3,14 +3,17 @@
 <h2>Resultado</h2>
 <div class="textoResultado">
   {% if data %}
-  <p><strong>{{ data.nombre }}</strong> ({{ data.documento }})</p>
-  <p>{{ data.mensaje }}</p>
-  {% if data.cuando %}<p>Hora: {{ data.cuando }}</p>{% endif %}
+    <p><strong>{{ data.nombre }}</strong> ({{ data.documento }})</p>
+    <p>{{ data.mensaje }}</p>
+    {% if data.cuando %}<p>Hora: {{ data.cuando }}</p>{% endif %}
+    <div style="margin-top:10px">
+      <img src="{% url 'face_image' documento=data.documento %}" alt="Rostro" style="max-width:260px;border-radius:8px;">
+    </div>
   {% else %}
-  <p>Sin datos.</p>
+    <p>Sin datos.</p>
   {% endif %}
 </div>
 <div class="botones">
-  <a href="{% url 'login' %}">Aceptar</a>
+  <a href="{% url 'ingresar' %}">Aceptar</a>
 </div>
 {% endblock %}
